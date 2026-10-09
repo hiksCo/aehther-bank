@@ -100,7 +100,14 @@ const fraudAlerts = [
   { name: 'maria@bank.io', reason: 'Suspicious activity after KYC update', risk: 'High' }
 ];
 
-function UserDashboard() {
+const kycSteps = [
+  { title: 'Identity', description: 'Upload passport or national ID', done: true },
+  { title: 'Selfie', description: 'Match your face with the document', done: true },
+  { title: 'Address', description: 'Proof of residence and source of funds', done: false },
+  { title: 'Approval', description: 'Compliance review and final status', done: false }
+];
+
+function UserDashboard({ onOpenKyc }) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -135,6 +142,7 @@ function UserDashboard() {
           </div>
 
           <div className="topbar-actions">
+            <button className="ghost-btn" onClick={onOpenKyc}>KYC</button>
             <button className="ghost-btn">Alerts</button>
             <button className="ghost-btn">Dark</button>
             <div className="avatar-pill">MM</div>
@@ -529,7 +537,97 @@ function AdminDashboard() {
   );
 }
 
-function LoginScreen({ onGoUser, onGoAdmin }) {
+function KycPage({ onBackToUser }) {
+  return (
+    <div className="kyc-page-shell">
+      <div className="kyc-header">
+        <div>
+          <p className="eyebrow">Verification</p>
+          <h2>Identity and compliance</h2>
+        </div>
+        <button className="ghost-btn" onClick={onBackToUser}>Back to dashboard</button>
+      </div>
+
+      <div className="kyc-grid">
+        <div className="panel kyc-panel">
+          <div className="panel-head">
+            <h3>Progress</h3>
+            <span className="chip success">Level 2 active</span>
+          </div>
+
+          <div className="kyc-progress-list">
+            {kycSteps.map((step) => (
+              <div key={step.title} className={step.done ? 'kyc-step done' : 'kyc-step'}>
+                <div className="kyc-step-icon">{step.done ? '✓' : step.title.charAt(0)}</div>
+                <div>
+                  <strong>{step.title}</strong>
+                  <small>{step.description}</small>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="panel kyc-panel">
+          <div className="panel-head">
+            <h3>Document upload</h3>
+            <span className="chip subtle">Required</span>
+          </div>
+
+          <div className="upload-boxes">
+            <div className="upload-box">
+              <strong>Passport / ID</strong>
+              <small>Front and back image</small>
+              <button className="secondary small">Upload file</button>
+            </div>
+            <div className="upload-box">
+              <strong>Selfie</strong>
+              <small>Live identity check</small>
+              <button className="secondary small">Start camera</button>
+            </div>
+            <div className="upload-box">
+              <strong>Proof of address</strong>
+              <small>Utility bill or bank statement</small>
+              <button className="secondary small">Upload file</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="panel kyc-bottom">
+        <div className="panel-head">
+          <h3>Eligibility</h3>
+        </div>
+
+        <div className="kyc-meta-grid">
+          <div className="meta-box">
+            <span>Current level</span>
+            <strong>Level 2</strong>
+          </div>
+          <div className="meta-box">
+            <span>Daily withdrawal limit</span>
+            <strong>€10,000</strong>
+          </div>
+          <div className="meta-box">
+            <span>Card issuance</span>
+            <strong>Up to 5 cards</strong>
+          </div>
+          <div className="meta-box accent">
+            <span>Next upgrade</span>
+            <strong>Level 3</strong>
+          </div>
+        </div>
+
+        <div className="kyc-footer-actions">
+          <button className="primary">Submit verification</button>
+          <button className="ghost-btn">Request help</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoginScreen({ onGoUser, onGoAdmin, onGoKyc }) {
   return (
     <div className="login-shell">
       <div className="login-panel">
@@ -560,6 +658,7 @@ function LoginScreen({ onGoUser, onGoAdmin }) {
           <div className="login-actions">
             <button className="primary" onClick={onGoUser}>Open user dashboard</button>
             <button className="secondary" onClick={onGoAdmin}>Open admin dashboard</button>
+            <button className="secondary" onClick={onGoKyc}>Open KYC flow</button>
           </div>
         </div>
       </div>
@@ -591,14 +690,18 @@ function App() {
   const [screen, setScreen] = useState('login');
 
   if (screen === 'login') {
-    return <LoginScreen onGoUser={() => setScreen('user')} onGoAdmin={() => setScreen('admin')} />;
+    return <LoginScreen onGoUser={() => setScreen('user')} onGoAdmin={() => setScreen('admin')} onGoKyc={() => setScreen('kyc')} />;
   }
 
   if (screen === 'admin') {
     return <AdminDashboard />;
   }
 
-  return <UserDashboard />;
+  if (screen === 'kyc') {
+    return <KycPage onBackToUser={() => setScreen('user')} />;
+  }
+
+  return <UserDashboard onOpenKyc={() => setScreen('kyc')} />;
 }
 
 export default App;
