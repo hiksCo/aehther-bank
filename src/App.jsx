@@ -107,7 +107,14 @@ const kycSteps = [
   { title: 'Approval', description: 'Compliance review and final status', done: false }
 ];
 
-function UserDashboard({ onOpenKyc }) {
+const walletHistory = [
+  { label: 'BTC Deposit', amount: '+0.50 BTC', time: 'Today, 09:15', type: 'credit' },
+  { label: 'ETH Withdrawal', amount: '-0.80 ETH', time: 'Yesterday, 17:24', type: 'debit' },
+  { label: 'USDT Reward', amount: '+250 USDT', time: 'Yesterday, 08:40', type: 'credit' },
+  { label: 'Card payment', amount: '-€48.90', time: 'Tue, 14:12', type: 'debit' }
+];
+
+function UserDashboard({ onOpenKyc, onOpenWallet }) {
   return (
     <div className="app-shell">
       <aside className="sidebar">
@@ -142,9 +149,9 @@ function UserDashboard({ onOpenKyc }) {
           </div>
 
           <div className="topbar-actions">
+            <button className="ghost-btn" onClick={onOpenWallet}>Wallet</button>
             <button className="ghost-btn" onClick={onOpenKyc}>KYC</button>
             <button className="ghost-btn">Alerts</button>
-            <button className="ghost-btn">Dark</button>
             <div className="avatar-pill">MM</div>
           </div>
         </header>
@@ -627,7 +634,128 @@ function KycPage({ onBackToUser }) {
   );
 }
 
-function LoginScreen({ onGoUser, onGoAdmin, onGoKyc }) {
+function WalletPage({ onBackToUser }) {
+  return (
+    <div className="wallet-page-shell">
+      <div className="wallet-header">
+        <div>
+          <p className="eyebrow">Wallet</p>
+          <h2>Deposit & withdrawal</h2>
+        </div>
+        <button className="ghost-btn" onClick={onBackToUser}>Back to dashboard</button>
+      </div>
+
+      <div className="wallet-grid">
+        <div className="panel wallet-panel accent-panel">
+          <div className="panel-head">
+            <h3>Portfolio balance</h3>
+            <span className="chip success">Available</span>
+          </div>
+
+          <div className="big-amount-block">
+            <strong>$45,678.90</strong>
+            <small>Across 5 assets</small>
+          </div>
+
+          <div className="mini-balance-row">
+            <div>
+              <span>BTC</span>
+              <strong>0.50</strong>
+            </div>
+            <div>
+              <span>ETH</span>
+              <strong>5.00</strong>
+            </div>
+            <div>
+              <span>USDT</span>
+              <strong>18,754</strong>
+            </div>
+          </div>
+        </div>
+
+        <div className="panel wallet-panel">
+          <div className="panel-head">
+            <h3>Quick action</h3>
+            <span className="chip subtle">Secure</span>
+          </div>
+
+          <div className="wallet-actions">
+            <button className="primary">Deposit crypto</button>
+            <button className="secondary">Withdraw crypto</button>
+            <button className="secondary">Bank transfer</button>
+            <button className="secondary">Swap</button>
+          </div>
+        </div>
+      </div>
+
+      <div className="wallet-grid lower-grid">
+        <div className="panel wallet-panel">
+          <div className="panel-head">
+            <h3>Transaction form</h3>
+          </div>
+
+          <div className="tx-form">
+            <label>
+              <span>Asset</span>
+              <select defaultValue="BTC">
+                <option>BTC</option>
+                <option>ETH</option>
+                <option>USDT</option>
+                <option>EUR</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Network</span>
+              <select defaultValue="Bitcoin">
+                <option>Bitcoin</option>
+                <option>Ethereum</option>
+                <option>TRON</option>
+                <option>SEPA</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Amount</span>
+              <input type="text" defaultValue="0.25 BTC" />
+            </label>
+
+            <label>
+              <span>Recipient address</span>
+              <input type="text" defaultValue="bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh" />
+            </label>
+          </div>
+
+          <div className="wallet-submit-row">
+            <button className="primary">Confirm</button>
+            <button className="ghost-btn">Preview</button>
+          </div>
+        </div>
+
+        <div className="panel wallet-panel">
+          <div className="panel-head">
+            <h3>Recent activity</h3>
+            <span className="chip subtle">4 items</span>
+          </div>
+
+          <div className="history-list">
+            {walletHistory.map((item) => (
+              <div className="history-item" key={item.label}>
+                <div>
+                  <strong>{item.label}</strong>
+                  <small>{item.time}</small>
+                </div>
+                <span className={item.type === 'credit' ? 'positive' : 'negative'}>{item.amount}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LoginScreen({ onGoUser, onGoAdmin, onGoKyc, onGoWallet }) {
   return (
     <div className="login-shell">
       <div className="login-panel">
@@ -659,6 +787,7 @@ function LoginScreen({ onGoUser, onGoAdmin, onGoKyc }) {
             <button className="primary" onClick={onGoUser}>Open user dashboard</button>
             <button className="secondary" onClick={onGoAdmin}>Open admin dashboard</button>
             <button className="secondary" onClick={onGoKyc}>Open KYC flow</button>
+            <button className="secondary" onClick={onGoWallet}>Open wallet</button>
           </div>
         </div>
       </div>
@@ -690,7 +819,14 @@ function App() {
   const [screen, setScreen] = useState('login');
 
   if (screen === 'login') {
-    return <LoginScreen onGoUser={() => setScreen('user')} onGoAdmin={() => setScreen('admin')} onGoKyc={() => setScreen('kyc')} />;
+    return (
+      <LoginScreen
+        onGoUser={() => setScreen('user')}
+        onGoAdmin={() => setScreen('admin')}
+        onGoKyc={() => setScreen('kyc')}
+        onGoWallet={() => setScreen('wallet')}
+      />
+    );
   }
 
   if (screen === 'admin') {
@@ -701,7 +837,11 @@ function App() {
     return <KycPage onBackToUser={() => setScreen('user')} />;
   }
 
-  return <UserDashboard onOpenKyc={() => setScreen('kyc')} />;
+  if (screen === 'wallet') {
+    return <WalletPage onBackToUser={() => setScreen('user')} />;
+  }
+
+  return <UserDashboard onOpenKyc={() => setScreen('kyc')} onOpenWallet={() => setScreen('wallet')} />;
 }
 
 export default App;

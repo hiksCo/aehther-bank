@@ -49,7 +49,8 @@ button {
   cursor: pointer;
 }
 
-input {
+input,
+select {
   width: 100%;
   background: rgba(15, 23, 37, 0.8);
   border: 1px solid var(--border);
@@ -59,7 +60,8 @@ input {
   outline: none;
 }
 
-input:focus {
+input:focus,
+select:focus {
   border-color: rgba(88, 213, 255, 0.55);
   box-shadow: 0 0 0 4px rgba(88, 213, 255, 0.15);
 }
@@ -497,7 +499,8 @@ td {
 .vault-list,
 .upload-boxes,
 .kyc-progress-list,
-.kyc-meta-grid {
+.kyc-meta-grid,
+.history-list {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -507,7 +510,8 @@ td {
 .staking-row,
 .support-item,
 .alert-item,
-.kyc-step {
+.kyc-step,
+.history-item {
   display: grid;
   grid-template-columns: 1fr auto auto;
   align-items: center;
@@ -520,7 +524,8 @@ td {
 .staking-row strong,
 .support-item strong,
 .alert-item strong,
-.kyc-step strong {
+.kyc-step strong,
+.history-item strong {
   color: var(--text);
   font-size: 0.96rem;
 }
@@ -529,7 +534,8 @@ td {
 .staking-row small,
 .support-item small,
 .alert-item small,
-.kyc-step small {
+.kyc-step small,
+.history-item small {
   color: var(--muted);
 }
 
@@ -768,7 +774,8 @@ td {
   max-width: 500px;
 }
 
-.login-form label {
+.login-form label,
+.tx-form label {
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -776,7 +783,10 @@ td {
   color: var(--muted);
 }
 
-.login-actions {
+.login-actions,
+.wallet-actions,
+.wallet-submit-row,
+.kyc-footer-actions {
   display: flex;
   gap: 12px;
   margin-top: 10px;
@@ -815,13 +825,15 @@ td {
   line-height: 1.6;
 }
 
-.kyc-page-shell {
+.kyc-page-shell,
+.wallet-page-shell {
   padding: 36px 28px 42px;
   max-width: 1200px;
   margin: 0 auto;
 }
 
-.kyc-header {
+.kyc-header,
+.wallet-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -829,19 +841,22 @@ td {
   margin-bottom: 22px;
 }
 
-.kyc-header h2 {
+.kyc-header h2,
+.wallet-header h2 {
   margin: 8px 0 0 0;
   font-size: clamp(2rem, 2.5vw, 2.7rem);
 }
 
-.kyc-grid {
+.kyc-grid,
+.wallet-grid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 20px;
   margin-bottom: 20px;
 }
 
-.kyc-panel {
+.kyc-panel,
+.wallet-panel {
   min-height: 320px;
 }
 
@@ -930,11 +945,72 @@ td {
   background: linear-gradient(135deg, rgba(88, 213, 255, 0.12), rgba(139, 124, 255, 0.12));
 }
 
-.kyc-footer-actions {
-  display: flex;
-  gap: 12px;
-  margin-top: 22px;
-  flex-wrap: wrap;
+.accent-panel {
+  background: linear-gradient(135deg, rgba(88, 213, 255, 0.08), rgba(139, 124, 255, 0.14));
+}
+
+.big-amount-block {
+  margin: 8px 0 18px;
+}
+
+.big-amount-block strong {
+  display: block;
+  font-size: clamp(2rem, 2.7vw, 3rem);
+}
+
+.big-amount-block small {
+  color: var(--muted);
+}
+
+.mini-balance-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.mini-balance-row div {
+  background: rgba(12, 20, 32, 0.6);
+  border: 1px solid var(--border);
+  padding: 14px;
+  border-radius: 12px;
+}
+
+.mini-balance-row span {
+  color: var(--muted);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mini-balance-row strong {
+  display: block;
+  margin-top: 8px;
+}
+
+.wallet-actions {
+  flex-direction: column;
+}
+
+.wallet-actions button,
+.wallet-submit-row button {
+  flex: 1 1 auto;
+}
+
+.tx-form {
+  display: grid;
+  gap: 14px;
+}
+
+.lower-grid {
+  grid-template-columns: 1.1fr 0.9fr;
+}
+
+.history-item {
+  grid-template-columns: 1fr auto;
+}
+
+.history-item span {
+  font-weight: 700;
 }
 
 @media (max-width: 1100px) {
@@ -942,7 +1018,9 @@ td {
   .admin-layout,
   .login-shell,
   .kyc-grid,
-  .kyc-meta-grid {
+  .wallet-grid,
+  .kyc-meta-grid,
+  .lower-grid {
     grid-template-columns: 1fr;
   }
 
@@ -968,18 +1046,21 @@ td {
   .admin-main,
   .login-panel,
   .login-side,
-  .kyc-page-shell {
+  .kyc-page-shell,
+  .wallet-page-shell {
     padding: 18px 14px 26px;
   }
 
   .balance-panel,
   .topbar,
-  .kyc-header {
+  .kyc-header,
+  .wallet-header {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .card-list {
+  .card-list,
+  .mini-balance-row {
     grid-template-columns: 1fr;
   }
 
@@ -993,11 +1074,16 @@ td {
 
   .quick-actions button,
   .login-actions button,
+  .wallet-actions button,
+  .wallet-submit-row button,
   .kyc-footer-actions button {
     flex: 1 1 45%;
   }
 
-  .login-actions {
+  .login-actions,
+  .wallet-actions,
+  .wallet-submit-row,
+  .kyc-footer-actions {
     flex-direction: column;
   }
 }
